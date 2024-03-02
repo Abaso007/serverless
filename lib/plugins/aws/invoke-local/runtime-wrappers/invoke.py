@@ -10,9 +10,7 @@ from importlib import import_module
 def decimal_serializer(o):
     if isinstance(o, decimal.Decimal):
         f = float(o)
-        if f.is_integer():
-          return int(f)
-        return f
+        return int(f) if f.is_integer() else f
     
 class FakeLambdaContext(object):
     def __init__(self, name='Fake', version='LATEST', timeout=6, **kwargs):
@@ -36,7 +34,7 @@ class FakeLambdaContext(object):
 
     @property
     def invoked_function_arn(self):
-        return 'arn:aws:lambda:serverless:' + self.name
+        return f'arn:aws:lambda:serverless:{self.name}'
 
     @property
     def memory_limit_in_mb(self):
@@ -48,7 +46,7 @@ class FakeLambdaContext(object):
 
     @property
     def log_group_name(self):
-        return '/aws/lambda/' + self.name
+        return f'/aws/lambda/{self.name}'
 
     @property
     def log_stream_name(self):
